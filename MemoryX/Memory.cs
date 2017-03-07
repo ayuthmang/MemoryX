@@ -17,7 +17,7 @@ namespace MemoryX
         private int bytesWritten;
 
         [Flags]
-        public enum  ProcessAccess
+        public enum ProcessAccess
         {
 
             /// <summary>
@@ -119,10 +119,10 @@ namespace MemoryX
         public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, byte[] lpBuffer, int dwSize,ref int lpNumberOfBytesWritten);
+        public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize,ref int lpNumberOfBytesWritten);
+        public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize, ref int lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
@@ -179,17 +179,16 @@ namespace MemoryX
             {
                 return false;
             }
-            
+
         }
 
-        public int WriteInt(long lpBaseAddress , int value)
+        public int WriteMemory(long lpBaseAddress , byte[] value)
         {
-            Console.WriteLine("Process id: " + this.proc_ID);
-            Console.WriteLine("Process Handle : " + this.proc_Handle);
+            //Console.WriteLine("Process id: " + this.proc_ID);
+            //Console.WriteLine("Process Handle : " + this.proc_Handle);
 
-            int bytesWritten = 0;
-            var arr = BitConverter.GetBytes(value);
-            WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
+            //var arr = BitConverter.GetBytes(value);
+            return WriteProcessMemory(proc_Handle, lpBaseAddress, value, value.Length, ref bytesWritten);
 
 
             //https://msdn.microsoft.com/en-us/library/bb383973.aspx
@@ -197,7 +196,19 @@ namespace MemoryX
             //var array = BitConverter.GetBytes(i);
             //int bytesWritten;
             //WriteProcessMemory(GameHandle, WriteAddress, array, (uint)array.Length, out bytesWritten);
-            return 0;
         }
+
+        public int WriteMemory(long lpBaseAddress, String str)
+        {
+            //http://stackoverflow.com/questions/16072709/converting-string-to-byte-array-in-c-sharp
+            //byte[] toBytes = Encoding.ASCII.GetBytes(somestring);
+
+            //You will need to turn it back into a string like this:
+
+            //string something = Encoding.ASCII.GetString(toBytes);
+            var arr = Encoding.ASCII.GetBytes(str);
+            return WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
+        }
+
     }
 }
