@@ -20,14 +20,18 @@ namespace MemoryXTest
         const int PROCESS_VM_OPERATION = 0x0008;
         static void Main(string[] args)
         {
-            MemoryX.Memory.WriteMemoryInt();
-            Console.ReadLine();
+            MemoryX.Memory myProc = new MemoryX.Memory();
+            myProc.getProcessHandle("notepad");
+            myProc.WriteInt(0x01666C68, 999);
+            //MemoryX.Memory.WriteMemoryInt();
+            //MemoryX.Memory.OpenProcess((int)MemoryX.Memory.ProcessAccess.AllAccess, false,999);
+            //Console.ReadLine();
             Console.Read();
             //Process process = Process.GetProcessesByName("notepad")[0];
             //IntPtr processHandle = OpenProcess(0x1F0FFF, false, process.Id);
 
             //int bytesWritten = 0;
-            //byte[] buffer = Encoding.Unicode.GetBytes("อะไรของมึง\0");
+            //byte[] buffer = Encoding.Unicode.GetBytes("Good bye world\0");
             //// '\0' marks the end of string
             ////00000175DF9B5C70  47 00 6F 00 6F 00 64 00 20 00 42 00 79 00 65 00  G.o.o.d. .B.y.e.  
 
