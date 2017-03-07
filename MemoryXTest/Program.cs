@@ -27,27 +27,13 @@ namespace MemoryXTest
             MemoryX.Memory myProc = new MemoryX.Memory();
             myProc.getProcessHandle("Tutorial-x86_64");
 
-            //Console.WriteLine(myProc.getProcessID());
-            Console.WriteLine(myProc.WriteInt(0x014FDAD0, 1231235));
-
+            //Console.WriteLine(myProc.WriteInt(0x014FDAD0, 1650.0123f));
+            //Console.WriteLine(myProc.WriteMemory(0x014FDAD0, Encoding.ASCII.GetBytes("HELLO WORLD!")));
+            Console.WriteLine(myProc.WriteMemory(0x014FDAD0, "Good bye World"));
             myProc.closeHandle();
             Console.Read();
 
-
-
-            //Process process = Process.GetProcessesByName("Tutorial-i386")[0];
-            //IntPtr processHandle = OpenProcess(0x1F0FFF, false, process.Id);
-
-            //int bytesWritten = 0;
-            //byte[] buffer = Encoding.Unicode.GetBytes("Good bye world\0");
-            //// '\0' marks the end of string
-            ////00000175DF9B5C70  47 00 6F 00 6F 00 64 00 20 00 42 00 79 00 65 00  G.o.o.d. .B.y.e.  
-
-            //// replace 0x0046A3B8 with your address
-            //WriteProcessMemory((int)processHandle, 0x01666C68, buffer, buffer.Length, ref bytesWritten);
-
-            //Console.ReadLine();
-
+       
         }
     }
 }
