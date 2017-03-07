@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +14,8 @@ namespace MemoryX
     {
         private IntPtr proc_Handle;
         private int proc_ID;
+        private int bytesWritten;
+
         [Flags]
         public enum  ProcessAccess
         {
@@ -115,27 +119,40 @@ namespace MemoryX
         public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, byte[] lpBuffer, int dwSize, int lpNumberOfBytesWritten);
+        public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, byte[] lpBuffer, int dwSize,ref int lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize, int lpNumberOfBytesWritten);
+        public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize,ref int lpNumberOfBytesWritten);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CloseHandle(IntPtr hObject);
 
+        public int getBytesWritten()
+        {
+            return bytesWritten;
+        }
+        public void closeHandle()
+        {
+            CloseHandle(proc_Handle);
+        }
         public IntPtr getProcessHandle()
         {
             return proc_Handle;
         }
         public int getProcessID()
         {
-            return proc_ID;
+            return this.proc_ID;
         }
         public Boolean getProcessHandle(int PID)
         {
             try
             {
                 Process proc = Process.GetProcessById(PID);
-                proc_ID = proc.Id;
-                proc_Handle = OpenProcess((int)ProcessAccess.AllAccess, false, proc.Id);
+                this.proc_ID = proc.Id;
+                this.proc_Handle = OpenProcess(0x1F0FFF, false, proc_ID);
                 return true;
             }
             catch
@@ -151,8 +168,8 @@ namespace MemoryX
                 foreach (Process proc in Process.GetProcessesByName(procName))
                 {
                     //take the first process 
-                    proc_ID = proc.Id;
-                    proc_Handle = OpenProcess((int)ProcessAccess.AllAccess, false, proc_ID);
+                    this.proc_ID = proc.Id;
+                    this.proc_Handle = OpenProcess(0x1F0FFF, false, this.proc_ID);
                     return true;
                 }
                 return false;
@@ -165,9 +182,22 @@ namespace MemoryX
             
         }
 
-        public void WriteInt(long lpBaseAddress , int value)
+        public int WriteInt(long lpBaseAddress , int value)
         {
-            WriteProcessMemory(proc_Handle, lpBaseAddress, value, 4, 0);
+            Console.WriteLine("Process id: " + this.proc_ID);
+            Console.WriteLine("Process Handle : " + this.proc_Handle);
+
+            int bytesWritten = 0;
+            var arr = BitConverter.GetBytes(value);
+            WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
+
+
+            //https://msdn.microsoft.com/en-us/library/bb383973.aspx
+            //http://stackoverflow.com/questions/4271291/writeprocessmemory-with-an-int-value
+            //var array = BitConverter.GetBytes(i);
+            //int bytesWritten;
+            //WriteProcessMemory(GameHandle, WriteAddress, array, (uint)array.Length, out bytesWritten);
+            return 0;
         }
     }
 }
