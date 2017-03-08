@@ -17,6 +17,7 @@ namespace MemoryX
         private IntPtr proc_Handle;
         private int proc_ID;
         private int bytesWritten;
+        private int bytesRead;
 
         [Flags]
         public enum ProcessAccess
@@ -127,7 +128,7 @@ namespace MemoryX
         public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize, ref int lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll")]
-        public static extern bool ReadProcessMemory(IntPtr hProcess,
+        public static extern int ReadProcessMemory(IntPtr hProcess,
          int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -136,23 +137,23 @@ namespace MemoryX
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool CloseHandle(IntPtr hObject);
 
-        public int getBytesWritten()
+        public int GetBytesWritten()
         {
             return bytesWritten;
         }
-        public void closeHandle()
+        public void CloseProcessHandle()
         {
             CloseHandle(proc_Handle);
         }
-        public IntPtr getProcessHandle()
+        public IntPtr GetProcessHandle()
         {
             return proc_Handle;
         }
-        public int getProcessID()
+        public int GetProcessID()
         {
             return this.proc_ID;
         }
-        public Boolean getProcessHandle(int PID)
+        public Boolean GetProcessHandle(int PID)
         {
             try
             {
@@ -222,19 +223,47 @@ namespace MemoryX
             int bytesRead = 0;
             ReadProcessMemory(proc_Handle, 0x0046A3B8, buffer, buffer.Length, ref bytesRead);
             Console.WriteLine(Encoding.Unicode.GetString(buffer) + " (" + bytesRead.ToString() + "bytes)");
-
-
+            
             return buffer;
         }
 
-        public int ReadInt32(int dwAddress)
+        public int readInt32(int dwAddress)
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
-            byte[] buffer = new byte[4];
+            byte[] buffer = new byte[8];
             int bytesread = 0;
             ReadProcessMemory(proc_Handle, dwAddress, buffer, 4, ref bytesread);
             return BitConverter.ToInt32(buffer, 0);
         }
+        public Single ReadSingle(int dwAddress)
+        {
+            //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
+            //http://stackoverflow.com/questions/30694922/modify-function-to-read-float-c-sharp
+            byte[] buffer = new byte[8];
+            ReadProcessMemory(proc_Handle, dwAddress, buffer, 8, ref bytesRead);
+            return BitConverter.ToSingle(buffer, 0); ;
+        }
+        
+        public float ReadFloat(int dwAddress) //float and single is the same value, so we can use readSingle
+        {
+            return ReadSingle(dwAddress);
+        }
 
+        public Double ReadDouble(int dwAddress)
+        {
+            byte[] buffer = new byte[8];
+            ReadProcessMemory(proc_Handle, dwAddress, buffer, 8, ref bytesRead);
+            return BitConverter.ToDouble(buffer, 0); ;
+        }
+        /// <summary>
+        /// Return an array of bytes that you need to read.
+        /// </summary>
+        public byte[] ReadMemory(int dwAddress , int dwSize)
+        {
+            //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
+            byte[] buffer = new byte[dwSize];
+            ReadProcessMemory(proc_Handle, dwAddress, buffer, dwSize, ref bytesRead);
+            return buffer;
+        }
     }
 }
