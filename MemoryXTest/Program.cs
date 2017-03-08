@@ -17,7 +17,6 @@ namespace MemoryXTest
             myProc.GetProcessHandle("Tutorial-i386");
 
             //http://stackoverflow.com/questions/3046784/byte-to-integer-in-c-sharp
-            byte[] bytes = myProc.ReadMemory(0x01783A70);
 
             // If the system architecture is little-endian (that is, little end first),
             // reverse the byte array.
@@ -29,16 +28,22 @@ namespace MemoryXTest
             float f = myProc.ReadFloat(0x01783A70);
             double d = myProc.ReadDouble(0x01783A70);
             Single s = myProc.ReadSingle(0x01783A70);
+            byte[] bs = myProc.ReadMemory(0x01783A70,4);
             Console.WriteLine("Single {0} , float {1}", s, f);
             Console.WriteLine("double {0}", d);
+            Console.Write("Array of Bytes ");
+            foreach (byte b in bs)
+                Console.Write(b.ToString("x") + " ");
+            Console.Write("\n");
 
             //WriteProcessMemory 
             myProc.WriteMemory(0x01783A70, BitConverter.GetBytes(1650.0d)); // for write a double value
             myProc.WriteMemory(0x01783A70, BitConverter.GetBytes(1650.0f)); // for write a float value
             myProc.WriteMemory(0x01783A70, "Hello World"); // for write a string value
-            myProc.WriteMemory(0x01783A70, new byte[] { 0xaa, 0xbb, 0xcc }); // for write a array of bytes value
+            myProc.WriteMemory(0x01783A70, new byte[] { 0xaa, 0xbb, 0xcc}); // for write a array of bytes value
             myProc.CloseProcessHandle();
 
+            Console.ReadLine();
        
         }
     }

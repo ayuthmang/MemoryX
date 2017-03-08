@@ -6,7 +6,6 @@ using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MemoryX
 {
@@ -216,9 +215,9 @@ namespace MemoryX
             return WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
         }
 
-        public byte[] ReadMemory(long lpBaseAddress)
+        public byte[] ReadMemory(long lpBaseAddress, int dwSize)
         {
-            var buffer = new byte[4];
+            var buffer = new byte[dwSize];
             int bytesRead = 0;
             ReadProcessMemory(proc_Handle, 0x0046A3B8, buffer, buffer.Length, ref bytesRead);
             return buffer;
