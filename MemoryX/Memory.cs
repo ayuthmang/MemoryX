@@ -167,7 +167,7 @@ namespace MemoryX
                 return false;
             }
         }
-        public Boolean getProcessHandle(String procName)
+        public Boolean GetProcessHandle(String procName)
         {
             try
             {
@@ -219,15 +219,12 @@ namespace MemoryX
         public byte[] ReadMemory(long lpBaseAddress)
         {
             var buffer = new byte[4];
-           
             int bytesRead = 0;
             ReadProcessMemory(proc_Handle, 0x0046A3B8, buffer, buffer.Length, ref bytesRead);
-            Console.WriteLine(Encoding.Unicode.GetString(buffer) + " (" + bytesRead.ToString() + "bytes)");
-            
             return buffer;
         }
 
-        public int readInt32(int dwAddress)
+        public int ReadInt32(int dwAddress)
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
             byte[] buffer = new byte[8];
