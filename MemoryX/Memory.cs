@@ -12,6 +12,8 @@ namespace MemoryX
 {
     public class Memory
     {
+
+        //Good article for this source: https://www.codeproject.com/Articles/670373/Csharp-Read-Write-another-Process-Memory
         private IntPtr proc_Handle;
         private int proc_ID;
         private int bytesWritten;
@@ -124,6 +126,10 @@ namespace MemoryX
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize, ref int lpNumberOfBytesWritten);
 
+        [DllImport("kernel32.dll")]
+        public static extern bool ReadProcessMemory(IntPtr hProcess,
+         int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SuppressUnmanagedCodeSecurity]
@@ -152,7 +158,7 @@ namespace MemoryX
             {
                 Process proc = Process.GetProcessById(PID);
                 this.proc_ID = proc.Id;
-                this.proc_Handle = OpenProcess(0x1F0FFF, false, proc_ID);
+                this.proc_Handle = OpenProcess((int)ProcessAccess.AllAccess, false, proc_ID);
                 return true;
             }
             catch
@@ -169,7 +175,7 @@ namespace MemoryX
                 {
                     //take the first process 
                     this.proc_ID = proc.Id;
-                    this.proc_Handle = OpenProcess(0x1F0FFF, false, this.proc_ID);
+                    this.proc_Handle = OpenProcess((int)ProcessAccess.AllAccess, false, this.proc_ID);
                     return true;
                 }
                 return false;
@@ -204,10 +210,30 @@ namespace MemoryX
             //byte[] toBytes = Encoding.ASCII.GetBytes(somestring);
 
             //You will need to turn it back into a string like this:
-
             //string something = Encoding.ASCII.GetString(toBytes);
             var arr = Encoding.ASCII.GetBytes(str);
             return WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
+        }
+
+        public byte[] ReadMemory(long lpBaseAddress)
+        {
+            var buffer = new byte[4];
+           
+            int bytesRead = 0;
+            ReadProcessMemory(proc_Handle, 0x0046A3B8, buffer, buffer.Length, ref bytesRead);
+            Console.WriteLine(Encoding.Unicode.GetString(buffer) + " (" + bytesRead.ToString() + "bytes)");
+
+
+            return buffer;
+        }
+
+        public int ReadInt32(int dwAddress)
+        {
+            //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
+            byte[] buffer = new byte[4];
+            int bytesread = 0;
+            ReadProcessMemory(proc_Handle, dwAddress, buffer, 4, ref bytesread);
+            return BitConverter.ToInt32(buffer, 0);
         }
 
     }

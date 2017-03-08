@@ -24,12 +24,28 @@ namespace MemoryXTest
         const int PROCESS_VM_OPERATION = 0x0008;
         static void Main(string[] args)
         {
-            MemoryX.Memory myProc = new MemoryX.Memory();
-            myProc.getProcessHandle("Tutorial-x86_64");
 
-            //Console.WriteLine(myProc.WriteInt(0x014FDAD0, 1650.0123f));
-            //Console.WriteLine(myProc.WriteMemory(0x014FDAD0, Encoding.ASCII.GetBytes("HELLO WORLD!")));
-            Console.WriteLine(myProc.WriteMemory(0x014FDAD0, "Good bye World"));
+            MemoryX.Memory myProc = new MemoryX.Memory();
+            myProc.getProcessHandle("Tutorial-i386");
+
+            //Console.WriteLine(myProc.getProcessHandle().ToString() + " " + myProc.getProcessID().ToString());
+
+            //myProc.WriteMemory(0x01783A70, BitConverter.GetBytes(1000));
+
+
+            //http://stackoverflow.com/questions/3046784/byte-to-integer-in-c-sharp
+            byte[] bytes = myProc.ReadMemory(0x01783A70);
+
+            // If the system architecture is little-endian (that is, little end first),
+            // reverse the byte array.
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+            int i = BitConverter.ToInt32(bytes, 0);
+
+
+            Console.WriteLine(myProc.ReadInt32(0x01783A70));
+
+
             myProc.closeHandle();
             Console.Read();
 
