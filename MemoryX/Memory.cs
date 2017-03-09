@@ -204,17 +204,32 @@ namespace MemoryX
             //WriteProcessMemory(GameHandle, WriteAddress, array, (uint)array.Length, out bytesWritten);
         }
 
-        public int WriteMemory(long lpBaseAddress, String str)
+        public int WriteMemory(long lpBaseAddress, String value)
         {
             //http://stackoverflow.com/questions/16072709/converting-string-to-byte-array-in-c-sharp
             //byte[] toBytes = Encoding.ASCII.GetBytes(somestring);
             //You will need to turn it back into a string like this:
             //string something = Encoding.ASCII.GetString(toBytes);
-            var arr = Encoding.ASCII.GetBytes(str);
+            var arr = Encoding.ASCII.GetBytes(value);
             return WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
         }
 
-        public int WriteInt(long lpBaseAddress , int value)
+        public int WriteMemory(long lpBaseAddress , int value)
+        {
+            return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
+        }
+
+        public int WriteMemory(long lpBaseAddress, float value)
+        {
+            return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
+        }
+
+        public int WriteMemory(long lpBaseAddress, double value)
+        {
+            return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
+        }
+
+        public int WriteMemory(long lpBaseAddress, byte value)
         {
             return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
         }
