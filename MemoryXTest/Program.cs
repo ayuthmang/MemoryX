@@ -14,7 +14,10 @@ namespace MemoryXTest
         {
 
             MemoryX.Memory myProc = new MemoryX.Memory();
-            myProc.GetProcessHandle("Tutorial-i386");
+
+            var procName = "Tutorial-x86_64";
+            var address = 0x000D1940;
+            myProc.GetProcessHandle(procName);
 
             //http://stackoverflow.com/questions/3046784/byte-to-integer-in-c-sharp
 
@@ -25,10 +28,10 @@ namespace MemoryXTest
             //int i = BitConverter.ToInt32(bytes, 0);
 
             // test a REAL number
-            float f = myProc.ReadFloat(0x01783A70);
-            double d = myProc.ReadDouble(0x01783A70);
-            Single s = myProc.ReadSingle(0x01783A70);
-            byte[] bs = myProc.ReadMemory(0x01783A70,4);
+            float f = myProc.ReadFloat(address);
+            double d = myProc.ReadDouble(address);
+            Single s = myProc.ReadSingle(address);
+            byte[] bs = myProc.ReadMemory(address, 4);
             Console.WriteLine("Single {0} , float {1}", s, f);
             Console.WriteLine("double {0}", d);
             Console.Write("Array of Bytes ");
@@ -37,10 +40,15 @@ namespace MemoryXTest
             Console.Write("\n");
 
             //WriteProcessMemory 
-            myProc.WriteMemory(0x01783A70, BitConverter.GetBytes(1650.0d)); // for write a double value
-            myProc.WriteMemory(0x01783A70, BitConverter.GetBytes(1650.0f)); // for write a float value
-            myProc.WriteMemory(0x01783A70, "Hello World"); // for write a string value
-            myProc.WriteMemory(0x01783A70, new byte[] { 0xaa, 0xbb, 0xcc}); // for write a array of bytes value
+            myProc.WriteMemory(address, BitConverter.GetBytes(1650.0d)); // for write a double value
+            myProc.WriteMemory(address, BitConverter.GetBytes(1650.0f)); // for write a float value
+            myProc.WriteMemory(address, "Hello World"); // for write a string value
+            myProc.WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc}); // for write a array of bytes value
+
+            Console.WriteLine(myProc.WriteInt(address, 9919));
+
+
+
             myProc.CloseProcessHandle();
 
             Console.ReadLine();

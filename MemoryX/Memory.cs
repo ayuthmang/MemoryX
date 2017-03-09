@@ -208,11 +208,15 @@ namespace MemoryX
         {
             //http://stackoverflow.com/questions/16072709/converting-string-to-byte-array-in-c-sharp
             //byte[] toBytes = Encoding.ASCII.GetBytes(somestring);
-
             //You will need to turn it back into a string like this:
             //string something = Encoding.ASCII.GetString(toBytes);
             var arr = Encoding.ASCII.GetBytes(str);
             return WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
+        }
+
+        public int WriteInt(long lpBaseAddress , int value)
+        {
+            return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
         }
 
         public byte[] ReadMemory(long lpBaseAddress, int dwSize)
