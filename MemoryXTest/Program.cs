@@ -18,7 +18,7 @@ namespace MemoryXTest
             var procName = "Tutorial-x86_64";
             var address = 0x000D1940;
 
-            // for open our process handle
+            // for open our process
             myProc.GetProcessHandle(procName);
 
             // for write memory string value to memory
@@ -40,7 +40,7 @@ namespace MemoryXTest
             myProc.WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });
 
             Console.ReadLine();
-       
+
         }
     }
 }
