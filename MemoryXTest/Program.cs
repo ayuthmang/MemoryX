@@ -15,7 +15,7 @@ namespace MemoryXTest
 
             MemoryX.Memory myProc = new MemoryX.Memory();
 
-            var procName = "Tutorial-x86_64";
+            var procName = "notepad";
             var address = 0x0162DB00;
 
             // for open our process
@@ -63,7 +63,10 @@ namespace MemoryXTest
             // for read a single byte value from memory
             Console.WriteLine("BYTES IS "  + myProc.ReadMemory(address , 1)[0].ToString("X"));
 
+            Console.WriteLine(myProc.GetBaseAddress("notepad.exe").ToString("X"));
+
             Console.ReadLine();
+
 
 
         }
