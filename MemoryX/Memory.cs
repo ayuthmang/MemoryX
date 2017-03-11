@@ -188,6 +188,9 @@ namespace MemoryX
 
         }
 
+        /// <summary>
+        /// Return a BaseAddress of module
+        /// </summary>
         public IntPtr GetBaseAddress(String moduleName)
         {
             IntPtr baseAddress = IntPtr.Zero;
