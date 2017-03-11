@@ -40,19 +40,15 @@ namespace MemoryXTest
             //myProc.WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });
 
 
-
+            // write an array of bytes in to memory
             myProc.WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });
-
-
-
 
             // for read a memory address value and return to array of bytes value
             byte[] arrBytes = myProc.ReadMemory(address, 5);
-
-
             // for print byte values
             foreach (byte b in arrBytes)
                 Console.WriteLine(b.ToString("X"));
+
 
             // for read a memory address value and return to double
             Console.WriteLine(myProc.ReadDouble(address));
@@ -62,9 +58,10 @@ namespace MemoryXTest
             Console.WriteLine(myProc.ReadFloat(address));
 
             // for read memory and return to string value
-
             Console.WriteLine(myProc.ReadString(address, 11));
 
+            // for read a single byte value from memory
+            Console.WriteLine("BYTES IS "  + myProc.ReadMemory(address , 1)[0].ToString("X"));
 
             Console.ReadLine();
 
