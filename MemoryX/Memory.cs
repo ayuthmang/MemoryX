@@ -188,6 +188,24 @@ namespace MemoryX
 
         }
 
+        public IntPtr GetBaseAddress(String moduleName)
+        {
+            IntPtr baseAddress = IntPtr.Zero;
+            try
+            {
+                foreach (ProcessModule PM in Process.GetProcessById(proc_ID).Modules)
+                {
+                    if (moduleName.ToLower() == PM.ModuleName.ToLower())
+                        baseAddress = PM.BaseAddress;
+                }
+                return baseAddress;
+            }
+            catch (Exception ex)
+            {
+                return IntPtr.Zero;
+            }
+        }
+
         public int WriteMemory(long lpBaseAddress , byte[] value)
         {
             //Console.WriteLine("Process id: " + this.proc_ID);
