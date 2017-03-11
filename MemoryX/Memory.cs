@@ -237,7 +237,6 @@ namespace MemoryX
         public byte[] ReadMemory(long lpBaseAddress, int dwSize)
         {
             var buffer = new byte[dwSize];
-            int bytesRead = 0;
             ReadProcessMemory(proc_Handle, 0x0046A3B8, buffer, buffer.Length, ref bytesRead);
             return buffer;
         }
@@ -246,8 +245,7 @@ namespace MemoryX
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
             byte[] buffer = new byte[8];
-            int bytesread = 0;
-            ReadProcessMemory(proc_Handle, dwAddress, buffer, 4, ref bytesread);
+            ReadProcessMemory(proc_Handle, dwAddress, buffer, 4, ref bytesRead);
             return BitConverter.ToInt32(buffer, 0);
         }
         public Single ReadSingle(int dwAddress)
@@ -279,6 +277,14 @@ namespace MemoryX
             byte[] buffer = new byte[dwSize];
             ReadProcessMemory(proc_Handle, dwAddress, buffer, dwSize, ref bytesRead);
             return buffer;
+        }
+
+        public String ReadString(int dwAddress, int length)
+        {
+            //http://stackoverflow.com/questions/1003275/how-to-convert-byte-to-string
+            byte[] buffer = new byte[length];
+            ReadProcessMemory(proc_Handle, dwAddress, buffer, length, ref bytesRead);
+            return System.Text.Encoding.UTF8.GetString(buffer); ;
         }
     }
 }
