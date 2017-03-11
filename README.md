@@ -5,6 +5,9 @@ A memory module for .net application.
 This module allow you to use the function WriteProcessMemory or ReadProcessMemory in easy way.
 
 
+
+IntPtr GetBaseAddress() -- return BaseAddress of module
+
 For example use:
             
             MemoryX.Memory myProc = new MemoryX.Memory();
@@ -51,4 +54,7 @@ For example use:
             // for read memory and return to string value
             Console.WriteLine(myProc.ReadString(address, 11));
 
-            
+
+            // get a base address of module and print out
+            Console.WriteLine(myProc.GetBaseAddress("notepad.exe").ToString("X"));
+
