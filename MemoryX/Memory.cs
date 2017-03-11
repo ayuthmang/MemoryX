@@ -140,9 +140,9 @@ namespace MemoryX
         {
             return bytesWritten;
         }
-        public void CloseProcessHandle()
+        public bool CloseProcessHandle()
         {
-            CloseHandle(proc_Handle);
+            return CloseHandle(proc_Handle);
         }
         public IntPtr GetProcessHandle()
         {
@@ -234,6 +234,8 @@ namespace MemoryX
             return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
         }
 
+
+        // Read a memory address value and return to array of bytes value
         public byte[] ReadMemory(long lpBaseAddress, int dwSize)
         {
             var buffer = new byte[dwSize];
@@ -241,6 +243,9 @@ namespace MemoryX
             return buffer;
         }
 
+        /// <summary>
+        /// Return a memory address and return to int value
+        /// </summary>
         public int ReadInt32(int dwAddress)
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
@@ -248,6 +253,10 @@ namespace MemoryX
             ReadProcessMemory(proc_Handle, dwAddress, buffer, 4, ref bytesRead);
             return BitConverter.ToInt32(buffer, 0);
         }
+
+        /// <summary>
+        /// Return a memory address and return to float or single value
+        /// </summary>
         public Single ReadSingle(int dwAddress)
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
@@ -256,12 +265,18 @@ namespace MemoryX
             ReadProcessMemory(proc_Handle, dwAddress, buffer, 8, ref bytesRead);
             return BitConverter.ToSingle(buffer, 0); ;
         }
-        
+
+        /// <summary>
+        /// Return a memory address and return to float or single value
+        /// </summary>
         public float ReadFloat(int dwAddress) //float and single is the same value, so we can use readSingle
         {
             return ReadSingle(dwAddress);
         }
 
+        /// <summary>
+        /// Return a memory address and return to double value
+        /// </summary>
         public Double ReadDouble(int dwAddress)
         {
             byte[] buffer = new byte[8];
@@ -269,16 +284,18 @@ namespace MemoryX
             return BitConverter.ToDouble(buffer, 0); ;
         }
         /// <summary>
-        /// Return an array of bytes that you need to read.
+        /// Return an array of bytes(max by length value) that you need to read .
         /// </summary>
-        public byte[] ReadMemory(int dwAddress , int dwSize)
+        public byte[] ReadMemory(int dwAddress, int length)
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
-            byte[] buffer = new byte[dwSize];
-            ReadProcessMemory(proc_Handle, dwAddress, buffer, dwSize, ref bytesRead);
+            byte[] buffer = new byte[length];
+            ReadProcessMemory(proc_Handle, dwAddress, buffer, length, ref bytesRead);
             return buffer;
         }
-
+        /// <summary>
+        /// Read a memory address and return to String
+        /// </summary>
         public String ReadString(int dwAddress, int length)
         {
             //http://stackoverflow.com/questions/1003275/how-to-convert-byte-to-string
