@@ -32,3 +32,23 @@ For example use:
 
             // for write memory array of bytes value to memory
             myProc.WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });
+            
+            
+            // for read a single byte value from memory
+            Console.WriteLine("BYTES IS "  + myProc.ReadMemory(address , 1)[0].ToString("X"));
+
+            byte[] arrBytes = myProc.ReadMemory(address, 5);
+            // for print byte values
+            foreach (byte b in arrBytes)
+                Console.WriteLine(b.ToString("X"));
+            
+            // for read a memory address value and return to double
+            Console.WriteLine(myProc.ReadDouble(address));
+
+            // for read a memory address value and return to flot or Single
+            Console.WriteLine(myProc.ReadFloat(address));
+
+            // for read memory and return to string value
+            Console.WriteLine(myProc.ReadString(address, 11));
+
+            
