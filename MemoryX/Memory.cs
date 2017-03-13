@@ -192,7 +192,7 @@ namespace MemoryX
         /// <summary>
         /// Return a BaseAddress of module
         /// </summary>
-        public IntPtr GetBaseAddress(String moduleName)
+        public long GetBaseAddress(String moduleName)
         {
             IntPtr baseAddress = IntPtr.Zero;
             try
@@ -202,11 +202,11 @@ namespace MemoryX
                     if (moduleName.ToLower() == PM.ModuleName.ToLower())
                         baseAddress = PM.BaseAddress;
                 }
-                return baseAddress;
+                return (long)baseAddress;
             }
             catch (Exception ex)
             {
-                return IntPtr.Zero;
+                return (long)IntPtr.Zero;
             }
         }
 
