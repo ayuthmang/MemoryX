@@ -63,15 +63,15 @@ namespace MemoryXTest
             // for read a single byte value from memory
             Console.WriteLine("BYTES IS "  + myProc.ReadMemory(address , 1)[0].ToString("X"));
 
-            long addressz = (long)myProc.GetBaseAddress("Tutorial-x86_64.exe") + 0x2C4A50;
-            Console.WriteLine(addressz.ToString("X"));
-            int value = myProc.ReadInt32((int)addressz);
 
-            Console.WriteLine(myProc.ReadInt32(addressz).ToString("X"));
-            //Console.WriteLine(myProc.ReadMemory( , 8));
+            long addressOfPtr = myProc.GetBaseAddress("Tutorial-x86_64.exe") + 0x2C4A50;
+            long valueOfPtr = myProc.ReadInt32(addressOfPtr);
+            int myValue = myProc.ReadInt32(valueOfPtr);
 
-            //Console.WriteLine(myProc.GetBaseAddress("notepad.exe").ToString("X"));
+            Console.WriteLine(addressOfPtr.ToString("X"));
+            Console.WriteLine(valueOfPtr.ToString("X"));
 
+            Console.WriteLine(myValue);
             Console.ReadLine();
 
         }
