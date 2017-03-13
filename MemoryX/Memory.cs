@@ -127,8 +127,9 @@ namespace MemoryX
         public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize, ref int lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll")]
-        public static extern int ReadProcessMemory(IntPtr hProcess,
-         int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
+        public static extern int ReadProcessMemory(IntPtr hProcess,  int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
+        [DllImport("kernel32.dll")]
+        public static extern int ReadProcessMemory(IntPtr hProcess, long lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
@@ -255,73 +256,65 @@ namespace MemoryX
             return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
         }
 
-
-        // Read a memory address value and return to array of bytes value
+        /// <summary>
+        /// Read a memory address value and return to array of bytes value
+        /// </summary>
         public byte[] ReadMemory(long lpBaseAddress, int dwSize)
         {
             var buffer = new byte[dwSize];
-            ReadProcessMemory(proc_Handle, 0x0046A3B8, buffer, buffer.Length, ref bytesRead);
+            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, buffer.Length, ref bytesRead);
             return buffer;
         }
 
         /// <summary>
         /// Return a memory address and return to int value
         /// </summary>
-        public int ReadInt32(int dwAddress)
+        public int ReadInt32(long lpBaseAddress)
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
             byte[] buffer = new byte[8];
-            ReadProcessMemory(proc_Handle, dwAddress, buffer, 4, ref bytesRead);
+            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, 4, ref bytesRead);
             return BitConverter.ToInt32(buffer, 0);
         }
 
         /// <summary>
         /// Return a memory address and return to float or single value
         /// </summary>
-        public Single ReadSingle(int dwAddress)
+        public Single ReadSingle(long lpBaseAddress)
         {
             //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
             //http://stackoverflow.com/questions/30694922/modify-function-to-read-float-c-sharp
             byte[] buffer = new byte[8];
-            ReadProcessMemory(proc_Handle, dwAddress, buffer, 8, ref bytesRead);
+            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, 8, ref bytesRead);
             return BitConverter.ToSingle(buffer, 0); ;
         }
 
         /// <summary>
         /// Return a memory address and return to float or single value
         /// </summary>
-        public float ReadFloat(int dwAddress) //float and single is the same value, so we can use readSingle
+        public float ReadFloat(long lpBaseAddress) //float and single is the same value, so we can use readSingle
         {
-            return ReadSingle(dwAddress);
+            return ReadSingle(lpBaseAddress);
         }
 
         /// <summary>
         /// Return a memory address and return to double value
         /// </summary>
-        public Double ReadDouble(int dwAddress)
+        public Double ReadDouble(long lpBaseAddress)
         {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(proc_Handle, dwAddress, buffer, 8, ref bytesRead);
+            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, 8, ref bytesRead);
             return BitConverter.ToDouble(buffer, 0); ;
         }
-        /// <summary>
-        /// Return an array of bytes(max by length value) that you need to read .
-        /// </summary>
-        public byte[] ReadMemory(int dwAddress, int length)
-        {
-            //http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
-            byte[] buffer = new byte[length];
-            ReadProcessMemory(proc_Handle, dwAddress, buffer, length, ref bytesRead);
-            return buffer;
-        }
+
         /// <summary>
         /// Read a memory address and return to String
         /// </summary>
-        public String ReadString(int dwAddress, int length)
+        public String ReadString(long lpBaseAddress, int length)
         {
             //http://stackoverflow.com/questions/1003275/how-to-convert-byte-to-string
             byte[] buffer = new byte[length];
-            ReadProcessMemory(proc_Handle, dwAddress, buffer, length, ref bytesRead);
+            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, length, ref bytesRead);
             return System.Text.Encoding.UTF8.GetString(buffer); ;
         }
     }
