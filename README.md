@@ -9,7 +9,7 @@ This module allow you to use the function WriteProcessMemory or ReadProcessMemor
 IntPtr GetBaseAddress() -- return BaseAddress of module
 
 For example use:
-            '''
+            ```cs
             MemoryX.Memory myProc = new MemoryX.Memory();
     
             var procName = "Tutorial-x86_64";
@@ -57,4 +57,4 @@ For example use:
 
             // get a base address of module and print out
             Console.WriteLine(myProc.GetBaseAddress("notepad.exe").ToString("X"));
-            '''
+            ```
