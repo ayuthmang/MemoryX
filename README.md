@@ -11,9 +11,15 @@ IntPtr GetBaseAddress() -- return BaseAddress of module
 For example use:
 
 ```csharp
+    // New an object , one object per process
     MemoryX.Memory myProc = new MemoryX.Memory();
     
-    var procName = "Tutorial-x86_64";
+    // for process name without .exe 
+    // Example you open task manager and see "notepad.exe" 
+    // you can change and put it into "procName" without extensions
+    var procName = "notepad"; 
+    
+    //address for access our process memory
     var address = 0x000D1940;
 
     // for open our process
