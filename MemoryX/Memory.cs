@@ -18,6 +18,26 @@ namespace MemoryX
         private int bytesWritten;
         private int bytesRead;
 
+
+        [DllImport("kernel32.dll")]
+        public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress,
+        UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+
+        [Flags]
+        public enum MemoryProtection
+        {
+            PAGE_NOACCESS = 1 ,
+            PAGE_READONLY = 2 ,
+            PAGE_READWRITE = 4 ,
+            PAGE_WRITECOPY = 8 ,
+            PAGE_EXECUTE = 16 ,
+            PAGE_EXECUTE_READ = 32 ,
+            PAGE_EXECUTE_READWRITE = 64 ,
+            PAGE_EXECUTE_WRITECOPY = 128 ,
+            PAGE_GUARD = 256 ,
+            PAGE_NOCACHE = 512
+        }
+
         [Flags]
         public enum ProcessAccess
         {
@@ -209,6 +229,22 @@ namespace MemoryX
                 return (long)IntPtr.Zero;
             }
         }
+
+        /// <summary>
+        /// Changes the protection of the page with the specified starting address to PAGE_EXECUTE_READWRITE
+        /// https://msdn.microsoft.com/en-us/library/windows/desktop/aa366786(v=vs.85).aspx
+        /// </summary>
+        public bool RemoveProtection(long lpBaseAddress)
+        {
+            uint oldProtect;
+            return VirtualProtectEx(proc_Handle, new IntPtr(lpBaseAddress), new UIntPtr(2048),Convert.ToUInt32( MemoryProtection.PAGE_EXECUTE_READWRITE ), out oldProtect);
+        }
+        //Public Sub RemoveProtection(ByVal AddressOfStart As Integer) 
+        //    On Error Resume Next
+        //    Dim oldProtect As Integer
+        //    If Not VirtualProtectEx(pHandle, New IntPtr(AddressOfStart), New IntPtr(2048), MemroyProtection.PAGE_EXECUTE_READWRITE, oldProtect) Then Throw New Win32Exception
+        //End Sub
+
 
         public int WriteMemory(long lpBaseAddress , byte[] value)
         {
