@@ -21,6 +21,9 @@ namespace MemoryXTest
             // for open our process
             myProc.GetProcessHandle(procName);
 
+            //for some game you need to remove protection before Read or Write Value in address
+            myProc.RemoveProtection(address);
+
             // for write memory string value to memory
             //myProc.WriteMemory(address, "Hello");
 
@@ -62,7 +65,6 @@ namespace MemoryXTest
 
             // for read a single byte value from memory
             Console.WriteLine("BYTES IS "  + myProc.ReadMemory(address , 1)[0].ToString("X"));
-
 
             long addressOfPtr = myProc.GetBaseAddress("Tutorial-x86_64.exe") + 0x2C4A50;
             long valueOfPtr = myProc.ReadInt32(addressOfPtr);
