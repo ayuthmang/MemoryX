@@ -4,9 +4,22 @@ A memory module for .net application.
 
 This module allow you to use the function WriteProcessMemory or ReadProcessMemory in easy way.
 
+## Functions
+
+### Get BadAddress of a module
+```cs 
+public long GetBaseAddress(String moduleName)
+```
+
+![baseAddress](https://github.com/blackSourcez/MemoryX/raw/master/images/baseAddress.png)
 
 
-IntPtr GetBaseAddress() -- return BaseAddress of module
+#### Example
+```cs
+    var procName = "Tutorial-x86_64"; 
+    long baseAddress = myProc.GetBaseAddress(procName + ".exe");
+    Console.WriteLine("BaseAddress: {0}", (baseAddress).ToString("X")); // BaseAddress: 100000000
+```
 
 For example use:
 
