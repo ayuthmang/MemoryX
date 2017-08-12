@@ -353,5 +353,19 @@ namespace MemoryX
             ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, length, ref bytesRead);
             return System.Text.Encoding.UTF8.GetString(buffer); ;
         }
+
+        /// <summary>
+        /// Read memory pointer and return into int
+        /// </summary>
+        public int ReadMemoryPointerInt(long lpBaseAddress, int[] offsets)
+        {
+            int ptr = ReadInt32(lpBaseAddress);
+            foreach (int offset in offsets)
+            {
+                ptr += offset;
+                ptr = ReadInt32(ptr);
+            }
+            return ptr;
+        }
     }
 }
