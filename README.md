@@ -65,3 +65,17 @@ For example use:
     // get a base address of module and print out
     Console.WriteLine(myProc.GetBaseAddress("notepad.exe").ToString("X"));
 ```
+
+## Read memory pointer
+```cs
+    MemoryX.Memory myProc = new MemoryX.Memory();
+    var procName = "Tutorial-x86_64";
+    myProc.GetProcessHandle(procName);
+    
+    long baseAddress = myProc.GetBaseAddress(procName + ".exe"); 
+    long address = baseAddress + 0x002C4A80; 
+    int[] offsets = new int[] {0x10, 0x18 ,0 , 0x18}; 
+ 
+    Console.WriteLine(myProc.ReadMemoryPointerInt(address, offsets)); 
+```
+
