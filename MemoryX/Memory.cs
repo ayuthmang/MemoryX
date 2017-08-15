@@ -292,6 +292,16 @@ namespace MemoryX
             return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
         }
 
+        public int WriteMemoryPointer(long lpBaseAddress, int[] offsets, int value)
+        {
+            foreach (int offset in offsets)
+            {
+                lpBaseAddress = ReadInt32(lpBaseAddress);
+                lpBaseAddress += offset;
+            }
+            return WriteMemory(lpBaseAddress, value);
+        }
+
         /// <summary>
         /// Read a memory address value and return to array of bytes value
         /// </summary>
