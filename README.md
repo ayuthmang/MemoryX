@@ -21,6 +21,24 @@ public long GetBaseAddress(String moduleName)
     Console.WriteLine("BaseAddress: {0}", (baseAddress).ToString("X")); // BaseAddress: 100000000
 ```
 
+## Write Process Memory
+
+```cs
+WriteMemory( [address], [data types])
+```
+
+#### Write integer into selected address
+
+```cs
+WriteMemory( address, 12345);
+```
+
+#### Write string into selected address
+
+```cs
+WriteMemory( address, "Hello");
+```
+
 For example use:
 
 ```csharp
