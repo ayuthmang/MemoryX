@@ -6,7 +6,16 @@ This module allow you to use the function WriteProcessMemory or ReadProcessMemor
 
 ## Functions
 
+### Important
+
+Before you use this module you must call function for called an api OpenProcess
+
+```cs
+MemoryX.Memory MemX = new MemoryX.Memory();
+```
+
 ### Get BadAddress of a module
+
 ```cs 
 public long GetBaseAddress(String moduleName)
 ```
@@ -38,6 +47,26 @@ WriteMemory( address, 12345);
 ```cs
 WriteMemory( address, "Hello");
 ```
+
+#### Write float value into selected address
+
+```cs
+WriteMemory(address, 3.1415928f);
+```
+
+#### Write double value into selected address
+
+```cs
+WriteMemory(address, 7.1474d);
+```
+
+#### Write byte value into selected address
+
+```cs
+WriteMemory(address, 0xba);
+```
+
+
 
 For example use:
 
