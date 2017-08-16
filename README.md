@@ -12,6 +12,7 @@ Before you use this module you must call function for called an api OpenProcess
 
 ```cs
 MemoryX.Memory MemX = new MemoryX.Memory();
+MemX.GetProcessHandle('notepad');
 ```
 
 ### Get BadAddress of a module
