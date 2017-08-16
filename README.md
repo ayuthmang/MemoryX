@@ -8,12 +8,24 @@ This module allow you to use the function WriteProcessMemory or ReadProcessMemor
 
 ### Important
 
-Before you use this module you must call function for called an api OpenProcess
+Before you use this module you must call function for called an api OpenProcess and stored 
+process handle in proc_Handle and process id in proc_ID.
+
+OpenProcess using process name. 
+(this will select only first process name that we've found)
 
 ```cs
 MemoryX.Memory MemX = new MemoryX.Memory();
-MemX.GetProcessHandle('notepad');
+MemX.GetProcessHandle("notepad");
 ```
+
+OpenProcess using PID.
+
+```cs
+MemoryX.Memory MemX = new MemoryX.Memory();
+MemX.GetProcessHandle(12345);
+```
+
 
 ### Get BadAddress of a module
 
