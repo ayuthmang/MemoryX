@@ -369,13 +369,12 @@ namespace MemoryX
         /// </summary>
         public int ReadMemoryPointerInt(long lpBaseAddress, int[] offsets)
         {
-            int ptr = ReadInt32(lpBaseAddress);
             foreach (int offset in offsets)
             {
-                ptr += offset;
-                ptr = ReadInt32(ptr);
+                lpBaseAddress = ReadInt32(lpBaseAddress);
+                lpBaseAddress += offset;
             }
-            return ptr;
+            return ReadInt32(lpBaseAddress);
         }
     }
 }
