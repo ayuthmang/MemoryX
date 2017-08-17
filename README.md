@@ -152,3 +152,16 @@ For example use:
     Console.WriteLine(myProc.ReadMemoryPointerInt(address, offsets)); 
 ```
 
+## Write memory int to address
+
+```cs
+    MemoryX.Memory myProc = new MemoryX.Memory();
+    String procName = "Tutorial-x86_64";
+    myProc.GetProcessHandle(procName);
+
+    long baseAddress = myProc.GetBaseAddress(procName + ".exe");
+    long address = baseAddress + 0x002C4A00;
+    int[] offsets = new int[] { 0x598, 0x6F0, 0xD8, 0xA0, 0x780 };
+
+    Console.WriteLine(myProc.WriteMemoryPointer(address, offsets, 666));
+```
