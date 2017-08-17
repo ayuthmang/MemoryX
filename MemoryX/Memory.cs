@@ -12,12 +12,11 @@ namespace MemoryX
     public class Memory
     {
 
-        //Good article for this source: https://www.codeproject.com/Articles/670373/Csharp-Read-Write-another-Process-Memory
+        // Good article for this source: https://www.codeproject.com/Articles/670373/Csharp-Read-Write-another-Process-Memory
         private IntPtr proc_Handle;
         private int proc_ID;
         private int bytesWritten;
         private int bytesRead;
-
 
         [DllImport("kernel32.dll")]
         public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress,
@@ -264,10 +263,10 @@ namespace MemoryX
 
         public int WriteMemory(long lpBaseAddress, String value)
         {
-            //http://stackoverflow.com/questions/16072709/converting-string-to-byte-array-in-c-sharp
-            //byte[] toBytes = Encoding.ASCII.GetBytes(somestring);
-            //You will need to turn it back into a string like this:
-            //string something = Encoding.ASCII.GetString(toBytes);
+            // http://stackoverflow.com/questions/16072709/converting-string-to-byte-array-in-c-sharp
+            // byte[] toBytes = Encoding.ASCII.GetBytes(somestring);
+            // You will need to turn it back into a string like this:
+            // string something = Encoding.ASCII.GetString(toBytes);
             var arr = Encoding.ASCII.GetBytes(value);
             return WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
         }
