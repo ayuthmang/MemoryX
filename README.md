@@ -15,22 +15,22 @@ OpenProcess using process name.
 (this will select only first process name that we've found)
 
 ```cs
-MemoryX.Memory MemX = new MemoryX.Memory();
-MemX.GetProcessHandle("notepad");
+    MemoryX.Memory MemX = new MemoryX.Memory();
+    MemX.GetProcessHandle("notepad");
 ```
 
 OpenProcess using PID.
 
 ```cs
-MemoryX.Memory MemX = new MemoryX.Memory();
-MemX.GetProcessHandle(12345);
+    MemoryX.Memory MemX = new MemoryX.Memory();
+    MemX.GetProcessHandle(12345);
 ```
 
 
 ### Get BadAddress of a module
 
 ```cs 
-public long GetBaseAddress(String moduleName)
+    public long GetBaseAddress(String moduleName)
 ```
 
 ![baseAddress](https://github.com/blackSourcez/MemoryX/raw/master/images/baseAddress.png)
@@ -46,40 +46,44 @@ public long GetBaseAddress(String moduleName)
 ## Write Process Memory
 
 ```cs
-WriteMemory( [address], [data types])
+    WriteMemory( [address], [data types])
 ```
 
 #### Write integer into selected address
 
 ```cs
-WriteMemory( address, 12345);
+    WriteMemory( address, 12345);
 ```
 
 #### Write string into selected address
 
 ```cs
-WriteMemory( address, "Hello");
+    WriteMemory( address, "Hello");
 ```
 
 #### Write float value into selected address
 
 ```cs
-WriteMemory(address, 3.1415928f);
+    WriteMemory(address, 3.1415928f);
 ```
 
 #### Write double value into selected address
 
 ```cs
-WriteMemory(address, 7.1474d);
+    WriteMemory(address, 7.1474d);
 ```
 
-#### Write byte value into selected address
+#### Write a single byte value into address
 
 ```cs
-WriteMemory(address, 0xba);
+    WriteMemory(address, 0xba);
 ```
 
+#### Write an array of bytes into address
 
+```cs
+    WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });
+```
 
 For example use:
 
@@ -115,7 +119,6 @@ For example use:
 
     // for write memory array of bytes value to memory
     myProc.WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });
-    
     
     // for read a single byte value from memory
     Console.WriteLine("BYTES IS "  + myProc.ReadMemory(address , 1)[0].ToString("X"));
