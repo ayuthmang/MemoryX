@@ -104,7 +104,9 @@ byte[] b = myProc.ReadMemory(address, 2);
 Console.WriteLine(BitConverter.ToInt16(b, 0));
 ```
 
-For example use:
+---
+
+## For others example use:
 
 ```csharp
     // New an object , one object per process
