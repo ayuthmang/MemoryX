@@ -85,6 +85,25 @@ OpenProcess using PID.
     WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });
 ```
 
+---------
+
+
+## Read Process Memory
+
+
+#### Read one byte
+
+```cs
+    Console.WriteLine("BYTES IS "  + myProc.ReadMemory(address , 1)[0].ToString("X"));
+```
+
+#### Read int16 from memory using BitConverter
+
+```cs
+byte[] b = myProc.ReadMemory(address, 2);
+Console.WriteLine(BitConverter.ToInt16(b, 0));
+```
+
 For example use:
 
 ```csharp
