@@ -375,5 +375,18 @@ namespace MemoryX
             }
             return ReadInt32(lpBaseAddress);
         }
+
+        /// <summary>
+        /// Return address
+        /// </summary>
+        public long GetPointerAddress(long lpBaseAddress, int[] offsets)
+        {
+            foreach (int offset in offsets)
+            {
+                lpBaseAddress = ReadInt32(lpBaseAddress);
+                lpBaseAddress += offset;
+            }
+            return lpBaseAddress;
+        }
     }
 }
