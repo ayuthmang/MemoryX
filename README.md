@@ -189,3 +189,7 @@ Console.WriteLine(BitConverter.ToInt16(b, 0));
 
     Console.WriteLine(myProc.WriteMemoryPointer(address, offsets, 666));
 ```
+
+## Contributing
+
+Pull requests are welcome =D.
