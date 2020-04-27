@@ -2,14 +2,13 @@
 
 A memory module for .net application.
 
-This module allow you to use the function WriteProcessMemory or ReadProcessMemory in easy way.
+This module allows you to use the function WriteProcessMemory or ReadProcessMemory in easy way.
 
 ## Functions
 
 ### Important
 
-Before you use this module you must call function for called an api OpenProcess and stored 
-process handle in proc_Handle and process id in proc_ID.
+Before you use this module you must call function for call an api OpenProcess and stored the process handle in proc_Handle and process id in proc_ID.
 
 OpenProcess using process name. 
 (this will select only first process name that we've found)
