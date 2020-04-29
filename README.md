@@ -6,10 +6,6 @@ This module allows you to use the function WriteProcessMemory or ReadProcessMemo
 
 ## Functions
 
-### Important
-
-Before you use this module you must call function for call an api OpenProcess and stored the process handle in proc_Handle and process id in proc_ID.
-
 OpenProcess using process name. 
 (this will select only first process name that we've found)
 
