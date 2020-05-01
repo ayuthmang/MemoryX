@@ -1,8 +1,6 @@
 # MemoryX
 
-A memory module for .net application.
-
-This module allows you to use the function WriteProcessMemory or ReadProcessMemory in easy way.
+A memory library for .net application for helps you accesing Windows' API such as WriteProcessMemory or ReadProcessMemory in simplest way.
 
 ## Functions
 
