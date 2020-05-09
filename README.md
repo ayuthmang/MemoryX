@@ -4,6 +4,8 @@ A memory library for .net application for helps you accesing Windows' API such a
 
 ## Functions
 
+** Sometime you might need to run an executable as administrator to access other process's memory.
+
 OpenProcess using process name. 
 (this will select only first process name that we've found)
 
