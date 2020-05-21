@@ -6,8 +6,7 @@ A memory library for .net application for helps you accesing Windows' API such a
 
 ** Sometime you might need to run an executable as administrator to access other process's memory.
 
-OpenProcess using process name. 
-(this will select only first process name that we've found)
+OpenProcess using process name, this will select the first process name that we've found.
 
 ```cs
     MemoryX.Memory MemX = new MemoryX.Memory();
