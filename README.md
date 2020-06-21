@@ -1,6 +1,6 @@
 # MemoryX
 
-A memory library for .net application for helps you accesing Windows' API such as `WriteProcessMemory` or `ReadProcessMemory` in simplest way.
+The memory library for .net application that helps you accesing Windows' API such as `WriteProcessMemory` or `ReadProcessMemory` in simplest way.
 
 ## Functions
 
