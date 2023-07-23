@@ -11,36 +11,30 @@ namespace MemoryX
 {
     public class Memory
     {
-
         // Good article for this source: https://www.codeproject.com/Articles/670373/Csharp-Read-Write-another-Process-Memory
-        private IntPtr proc_Handle;
+        private IntPtr processHandle;
         private int processId;
         private int bytesWritten;
         private int bytesRead;
 
-        [DllImport("kernel32.dll")]
-        public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress,
-        UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
-
         [Flags]
         public enum MemoryProtection
         {
-            PAGE_NOACCESS = 1 ,
-            PAGE_READONLY = 2 ,
-            PAGE_READWRITE = 4 ,
-            PAGE_WRITECOPY = 8 ,
-            PAGE_EXECUTE = 16 ,
-            PAGE_EXECUTE_READ = 32 ,
-            PAGE_EXECUTE_READWRITE = 64 ,
-            PAGE_EXECUTE_WRITECOPY = 128 ,
-            PAGE_GUARD = 256 ,
+            PAGE_NOACCESS = 1,
+            PAGE_READONLY = 2,
+            PAGE_READWRITE = 4,
+            PAGE_WRITECOPY = 8,
+            PAGE_EXECUTE = 16,
+            PAGE_EXECUTE_READ = 32,
+            PAGE_EXECUTE_READWRITE = 64,
+            PAGE_EXECUTE_WRITECOPY = 128,
+            PAGE_GUARD = 256,
             PAGE_NOCACHE = 512
         }
 
         [Flags]
         public enum ProcessAccess
         {
-
             /// <summary>
             /// Required to create a thread.
             /// </summary>
@@ -146,9 +140,12 @@ namespace MemoryX
         public static extern int WriteProcessMemory(IntPtr hProcess, long lpBaseAddress, int value, int dwSize, ref int lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll")]
-        public static extern int ReadProcessMemory(IntPtr hProcess,  int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
+        public static extern int ReadProcessMemory(IntPtr hProcess, int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
         [DllImport("kernel32.dll")]
         public static extern int ReadProcessMemory(IntPtr hProcess, long lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
@@ -160,25 +157,29 @@ namespace MemoryX
         {
             return bytesWritten;
         }
+
         public bool CloseProcessHandle()
         {
-            return CloseHandle(proc_Handle);
+            return CloseHandle(processHandle);
         }
+
         public IntPtr GetProcessHandle()
         {
-            return proc_Handle;
+            return processHandle;
         }
+
         public int GetProcessID()
         {
             return this.processId;
         }
+
         public Boolean GetProcessHandle(int PID)
         {
             try
             {
                 Process proc = Process.GetProcessById(PID);
                 this.processId = proc.Id;
-                this.proc_Handle = OpenProcess((int)ProcessAccess.AllAccess, false, processId);
+                this.processHandle = OpenProcess((int)ProcessAccess.AllAccess, false, processId);
                 return true;
             }
             catch
@@ -186,6 +187,7 @@ namespace MemoryX
                 return false;
             }
         }
+
         public Boolean GetProcessHandle(String procName)
         {
             try
@@ -195,7 +197,7 @@ namespace MemoryX
                 {
                     //take the first process 
                     this.processId = proc.Id;
-                    this.proc_Handle = OpenProcess((int)ProcessAccess.AllAccess, false, this.processId);
+                    this.processHandle = OpenProcess((int)ProcessAccess.AllAccess, false, this.processId);
                     return true;
                 }
                 return false;
@@ -236,24 +238,24 @@ namespace MemoryX
         public bool RemoveProtection(long lpBaseAddress)
         {
             uint oldProtect;
-            return VirtualProtectEx(proc_Handle, new IntPtr(lpBaseAddress), new UIntPtr(2048),Convert.ToUInt32( MemoryProtection.PAGE_EXECUTE_READWRITE ), out oldProtect);
+            return VirtualProtectEx(processHandle, new IntPtr(lpBaseAddress), new UIntPtr(2048), Convert.ToUInt32(MemoryProtection.PAGE_EXECUTE_READWRITE), out oldProtect);
         }
 
-        public int WriteMemory(long lpBaseAddress , byte[] value)
+        public int WriteMemory(long lpBaseAddress, byte[] value)
         {
             // https://msdn.microsoft.com/en-us/library/bb383973.aspx
             // http://stackoverflow.com/questions/4271291/writeprocessmemory-with-an-int-value
-            return WriteProcessMemory(proc_Handle, lpBaseAddress, value, value.Length, ref bytesWritten);
+            return WriteProcessMemory(processHandle, lpBaseAddress, value, value.Length, ref bytesWritten);
         }
 
         public int WriteMemory(long lpBaseAddress, String value)
         {
             // http://stackoverflow.com/questions/16072709/converting-string-to-byte-array-in-c-sharp
             var arr = Encoding.ASCII.GetBytes(value);
-            return WriteProcessMemory(proc_Handle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
+            return WriteProcessMemory(processHandle, lpBaseAddress, arr, arr.Length, ref bytesWritten);
         }
 
-        public int WriteMemory(long lpBaseAddress , int value)
+        public int WriteMemory(long lpBaseAddress, int value)
         {
             return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
         }
@@ -289,7 +291,7 @@ namespace MemoryX
         public byte[] ReadMemory(long lpBaseAddress, int dwSize)
         {
             var buffer = new byte[dwSize];
-            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, buffer.Length, ref bytesRead);
+            ReadProcessMemory(processHandle, lpBaseAddress, buffer, buffer.Length, ref bytesRead);
             return buffer;
         }
 
@@ -300,7 +302,7 @@ namespace MemoryX
         {
             // http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
             byte[] buffer = new byte[8];
-            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, 4, ref bytesRead);
+            ReadProcessMemory(processHandle, lpBaseAddress, buffer, 4, ref bytesRead);
             return BitConverter.ToInt32(buffer, 0);
         }
 
@@ -312,7 +314,7 @@ namespace MemoryX
             // http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
             // http://stackoverflow.com/questions/30694922/modify-function-to-read-float-c-sharp
             byte[] buffer = new byte[8];
-            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, 8, ref bytesRead);
+            ReadProcessMemory(processHandle, lpBaseAddress, buffer, 8, ref bytesRead);
             return BitConverter.ToSingle(buffer, 0); ;
         }
 
@@ -330,7 +332,7 @@ namespace MemoryX
         public Double ReadDouble(long lpBaseAddress)
         {
             byte[] buffer = new byte[8];
-            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, 8, ref bytesRead);
+            ReadProcessMemory(processHandle, lpBaseAddress, buffer, 8, ref bytesRead);
             return BitConverter.ToDouble(buffer, 0); ;
         }
 
@@ -341,7 +343,7 @@ namespace MemoryX
         {
             //http://stackoverflow.com/questions/1003275/how-to-convert-byte-to-string
             byte[] buffer = new byte[length];
-            ReadProcessMemory(proc_Handle, lpBaseAddress, buffer, length, ref bytesRead);
+            ReadProcessMemory(processHandle, lpBaseAddress, buffer, length, ref bytesRead);
             return System.Text.Encoding.UTF8.GetString(buffer); ;
         }
 
