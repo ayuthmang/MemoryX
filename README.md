@@ -1,10 +1,18 @@
 # MemoryX
 
-The memory library for .net application that helps you accesing Windows' API such as `WriteProcessMemory` or `ReadProcessMemory` in simplest way.
+The memory library for .NET applications helps you access Windows APIs such as `WriteProcessMemory` or `ReadProcessMemory` in the simplest way.
+
+⚠️ This project is no longer active and maintained. Feel free to use code inside or forks and add new functionality to meet your needs.
+
+## Motivation
+
+I created this library to help me read-write memory from any process, and game (at that time it's Warcraft III).
+I copied the code and started the new project over and over again.
+So I decided to learn how to create a library and plug it into my game helper.
 
 ## Functions
 
-** Sometime you might need to run an executable as administrator to access other process's memory.
+** Sometimes you might need to run an executable as administrator to access other process's memory.
 
 OpenProcess using process name, this will select the first process name that we've found.
 
