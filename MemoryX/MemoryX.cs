@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -9,7 +7,7 @@ using System.Text;
 
 namespace MemoryX
 {
-    public class Memory
+    public class MemoryX
     {
         // Good article for this source: https://www.codeproject.com/Articles/670373/Csharp-Read-Write-another-Process-Memory
         private IntPtr processHandle;
@@ -173,7 +171,7 @@ namespace MemoryX
             return this.processId;
         }
 
-        public Boolean GetProcessHandle(int PID)
+        public bool GetProcessHandle(int PID)
         {
             try
             {
@@ -188,7 +186,7 @@ namespace MemoryX
             }
         }
 
-        public Boolean GetProcessHandle(String procName)
+        public bool GetProcessHandle(String procName)
         {
             try
             {
@@ -225,7 +223,7 @@ namespace MemoryX
                 }
                 return (long)baseAddress;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return (long)IntPtr.Zero;
             }
@@ -237,8 +235,7 @@ namespace MemoryX
         /// </summary>
         public bool RemoveProtection(long lpBaseAddress)
         {
-            uint oldProtect;
-            return VirtualProtectEx(processHandle, new IntPtr(lpBaseAddress), new UIntPtr(2048), Convert.ToUInt32(MemoryProtection.PAGE_EXECUTE_READWRITE), out oldProtect);
+            return VirtualProtectEx(processHandle, new IntPtr(lpBaseAddress), new UIntPtr(2048), Convert.ToUInt32(MemoryProtection.PAGE_EXECUTE_READWRITE), out uint oldProtect);
         }
 
         public int WriteMemory(long lpBaseAddress, byte[] value)
@@ -341,7 +338,7 @@ namespace MemoryX
         /// </summary>
         public String ReadString(long lpBaseAddress, int length)
         {
-            //http://stackoverflow.com/questions/1003275/how-to-convert-byte-to-string
+            // http://stackoverflow.com/questions/1003275/how-to-convert-byte-to-string
             byte[] buffer = new byte[length];
             ReadProcessMemory(processHandle, lpBaseAddress, buffer, length, ref bytesRead);
             return System.Text.Encoding.UTF8.GetString(buffer); ;

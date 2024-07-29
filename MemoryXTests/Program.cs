@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using MemoryX;
 
 namespace MemoryXTest
 {
@@ -12,8 +13,7 @@ namespace MemoryXTest
     {
         static void Main(string[] args)
         {
-
-            MemoryX.Memory myProc = new MemoryX.Memory();
+            MemoryX.MemoryX myProc = new MemoryX.MemoryX();
 
             var procName = "Tutorial-x86_64";
             var address = 0x0162DB00;
