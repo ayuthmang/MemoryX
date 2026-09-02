@@ -16,14 +16,14 @@ concurrency:
 
 env:
   SOLUTION: MemoryX.sln
+  # Pinned so the build stays reproducible as runner images change.
+  REFERENCE_ASSEMBLIES_VERSION: 1.0.3
 
 jobs:
   build:
     name: Build (${{ matrix.configuration }})
     # MemoryX targets .NET Framework 4.5.2 and P/Invokes kernel32, so it needs a
     # Windows runner with MSBuild rather than the cross-platform `dotnet` CLI.
-    # The windows-latest image ships the 4.5.2 targeting pack, so no retargeting
-    # or reference-assembly package is required.
     runs-on: windows-latest
 
     strategy:
@@ -44,11 +44,38 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore $env:SOLUTION
 
+      - name: Provision .NET Framework 4.5.2 reference assemblies
+        # The hosted image now ships Visual Studio 18, which dropped the 4.5.2
+        # targeting pack, so MSBuild fails with MSB3644. This package supplies
+        # the reference assemblies, which keeps the build reproducible instead
+        # of depending on whichever targeting packs a runner happens to have.
+        # Nothing here changes how the projects build in Visual Studio.
+        run: |
+          nuget install Microsoft.NETFramework.ReferenceAssemblies.net452 `
+            -Version $env:REFERENCE_ASSEMBLIES_VERSION `
+            -OutputDirectory packages -ExcludeVersion -NonInteractive
+
+          # MSBuild's GetReferenceAssemblyPaths task resolves the framework at
+          # <RootPath>\.NETFramework\v4.5.2, so locate that folder in the
+          # downloaded package rather than assuming its internal layout.
+          $v452 = Get-ChildItem packages -Recurse -Directory -Filter 'v4.5.2' |
+            Where-Object { $_.Parent.Name -eq '.NETFramework' } |
+            Select-Object -First 1
+
+          if (-not $v452) {
+            throw "Could not find .NETFramework\v4.5.2 reference assemblies in the downloaded package."
+          }
+
+          $root = $v452.Parent.Parent.FullName
+          Write-Host "Using TargetFrameworkRootPath=$root"
+          "TARGET_FRAMEWORK_ROOT_PATH=$root" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Build the solution
         run: >-
           msbuild $env:SOLUTION
           /p:Configuration=${{ matrix.configuration }}
           /p:Platform="Any CPU"
+          /p:TargetFrameworkRootPath="$env:TARGET_FRAMEWORK_ROOT_PATH"
           /m
           /nologo
           /verbosity:minimal
