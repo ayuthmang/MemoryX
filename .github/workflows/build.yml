@@ -1,0 +1,63 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOLUTION: MemoryX.sln
+
+jobs:
+  build:
+    name: Build (${{ matrix.configuration }})
+    # MemoryX targets .NET Framework 4.5.2 and P/Invokes kernel32, so it needs a
+    # Windows runner with MSBuild rather than the cross-platform `dotnet` CLI.
+    # The windows-latest image ships the 4.5.2 targeting pack, so no retargeting
+    # or reference-assembly package is required.
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v4
+
+      - name: Restore NuGet packages
+        run: nuget restore $env:SOLUTION
+
+      - name: Build the solution
+        run: >-
+          msbuild $env:SOLUTION
+          /p:Configuration=${{ matrix.configuration }}
+          /p:Platform="Any CPU"
+          /m
+          /nologo
+          /verbosity:minimal
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v7
+        with:
+          name: MemoryX-${{ matrix.configuration }}
+          path: |
+            MemoryX/bin/${{ matrix.configuration }}/
+            MemoryXTest/bin/${{ matrix.configuration }}/
+          if-no-files-found: error
