@@ -1,5 +1,7 @@
 # MemoryX
 
+[![Build](https://github.com/ayuthmang/MemoryX/actions/workflows/build.yml/badge.svg)](https://github.com/ayuthmang/MemoryX/actions/workflows/build.yml)
+
 The memory library for .NET applications helps you access Windows APIs such as `WriteProcessMemory` or `ReadProcessMemory` in the simplest way.
 
 ⚠️ This project is no longer active and maintained. Feel free to use code inside or forks and add new functionality to meet your needs.
