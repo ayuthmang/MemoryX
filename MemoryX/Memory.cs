@@ -180,7 +180,9 @@ namespace MemoryX
                 Process proc = Process.GetProcessById(PID);
                 this.processId = proc.Id;
                 this.processHandle = OpenProcess((int)ProcessAccess.AllAccess, false, processId);
-                return true;
+                // OpenProcess returns NULL on failure, typically when the caller is
+                // not elevated; reporting success there hides the real error.
+                return this.processHandle != IntPtr.Zero;
             }
             catch
             {
@@ -198,7 +200,7 @@ namespace MemoryX
                     //take the first process 
                     this.processId = proc.Id;
                     this.processHandle = OpenProcess((int)ProcessAccess.AllAccess, false, this.processId);
-                    return true;
+                    return this.processHandle != IntPtr.Zero;
                 }
                 return false;
 
@@ -225,7 +227,7 @@ namespace MemoryX
                 }
                 return (long)baseAddress;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return (long)IntPtr.Zero;
             }
@@ -272,7 +274,9 @@ namespace MemoryX
 
         public int WriteMemory(long lpBaseAddress, byte value)
         {
-            return WriteMemory(lpBaseAddress, BitConverter.GetBytes(value));
+            // BitConverter.GetBytes has no byte overload; passing one here promotes
+            // it to short and writes two bytes, so build the single-byte buffer.
+            return WriteMemory(lpBaseAddress, new byte[] { value });
         }
 
         public int WriteMemoryPointer(long lpBaseAddress, int[] offsets, int value)
@@ -313,9 +317,9 @@ namespace MemoryX
         {
             // http://www.pinvoke.net/default.aspx/kernel32.readprocessmemory
             // http://stackoverflow.com/questions/30694922/modify-function-to-read-float-c-sharp
-            byte[] buffer = new byte[8];
-            ReadProcessMemory(processHandle, lpBaseAddress, buffer, 8, ref bytesRead);
-            return BitConverter.ToSingle(buffer, 0); ;
+            byte[] buffer = new byte[4];
+            ReadProcessMemory(processHandle, lpBaseAddress, buffer, 4, ref bytesRead);
+            return BitConverter.ToSingle(buffer, 0);
         }
 
         /// <summary>

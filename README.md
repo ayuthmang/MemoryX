@@ -79,8 +79,11 @@ OpenProcess using PID.
 
 #### Write a single byte value into address
 
+The cast matters: an unsuffixed literal such as `0xba` is an `int`, so it binds
+to the `int` overload and writes four bytes.
+
 ```cs
-    WriteMemory(address, 0xba);
+    WriteMemory(address, (byte)0xba);
 ```
 
 #### Write an array of bytes into address
@@ -140,7 +143,7 @@ Console.WriteLine(BitConverter.ToInt16(b, 0));
     myProc.WriteMemory(address, 7.1474d);
 
     // for write memory byte value to memory
-    myProc.WriteMemory(address, 0xba);
+    myProc.WriteMemory(address, (byte)0xba);
 
     // for write memory array of bytes value to memory
     myProc.WriteMemory(address, new byte[] { 0xaa, 0xbb, 0xcc });

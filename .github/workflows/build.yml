@@ -80,6 +80,16 @@ jobs:
           /nologo
           /verbosity:minimal
 
+      - name: Run the self-test harness
+        # MemoryXTest round-trips the library against its own process memory and
+        # exits non-zero on any failed check. A native exit code does not fail a
+        # PowerShell step on its own, so it is checked explicitly.
+        run: |
+          $exe = "MemoryXTest\bin\${{ matrix.configuration }}\MemoryXTest.exe"
+          if (-not (Test-Path $exe)) { throw "Harness not found at $exe" }
+          & $exe
+          if ($LASTEXITCODE -ne 0) { throw "Self-test harness failed with exit code $LASTEXITCODE" }
+
       - name: Upload build output
         uses: actions/upload-artifact@v7
         with:
